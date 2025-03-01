@@ -7,6 +7,8 @@
 // SPDX-License-Identifier: SEE LICENSE IN LICENSE
 pragma solidity ^0.8.18;
 
+import {AggregatorV3Interface} from "@chainlink/contracts/src/v0.8/shared/interfaces/AggregatorV3Interface.sol";
+
 contract FundMe {
 
     uint256 public minimumUSD = 5;
@@ -18,7 +20,7 @@ contract FundMe {
         //require(msg.value > 1e18); // requires user to spend at least 1 ETH
         // msg.value = numbe of wei sent with the message 
 
-        require(msg.value > 1e18, "not enough ETH");
+        //require(msg.value > 1e18, "not enough ETH");
         // "require" requires user to what is in the parentheses; 
         // it also works like a if/else statement: if it said 
         // require(msg.value > 1e18, "not enough ETH") and the 
@@ -29,9 +31,28 @@ contract FundMe {
         
         // 1e18 = 1 ETH casue 1 ETH = 1 * 10 ** 18 Wei 
         // in solidity ** means to the power 
+
+
+        require(msg.value >= minimumUSD, "not enough ETH");
+
+
     }
 
-    function withdraw() public {
+    // function withdraw() public {
+
+    // }
+
+    function getPrice() public view returns(uint256){
+        address chainLinkAddress = 0x694AA1769357215DE4FAC081bf1f309aDC325306; 
+
+        AggregatorV3Interface priceFeed = AggregatorV3Interface(chainLinkAddress);
+        (uint80 roundID, int256 price, uint256 startedAt, uint256 timestamp, uint80 answeredInRound) = priceFeed.latestRoundData();
+        // since we only care about price we could also do:
+        // (,int256 price,,,) = priceFeed.latestRoundData();
+        return uint(price * 1e10);
+    }
+
+    function getConversionRate() public {
 
     }
 }
