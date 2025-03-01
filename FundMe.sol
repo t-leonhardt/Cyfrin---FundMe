@@ -59,7 +59,13 @@ contract FundMe {
         // msg.value is going to have 18
     }
 
-    function getConversionRate() public {
+    function getConversionRate(uint256 ethAmount) public view returns(uint256){
+        uint256 ethPrice = getPrice();
+        uint256 ethAmountInUSD = (ethPrice * ethAmount) / 1e18;
+        // devide by 1e18 necessary since both numbers are in 1e18
+        // and 1e18 * 1e18 = 1e36; also, in Solidity always first 
+        // multiply and then divide 
 
+        return ethAmountInUSD;
     }
 }
