@@ -11,7 +11,9 @@ import {AggregatorV3Interface} from "@chainlink/contracts/src/v0.8/shared/interf
 
 contract FundMe {
 
-    uint256 public minimumUSD = 5;
+    uint256 public minimumUSD = 5 * (10 ** 18);
+    // update since getConversionRate returns number with 18 decimal places 
+    // other options: 5e18 or 5 * 1e18
     
     function fund() public payable{ 
         // payable keyword is necessary for the 
@@ -33,7 +35,7 @@ contract FundMe {
         // in solidity ** means to the power 
 
 
-        require(msg.value >= minimumUSD, "not enough ETH");
+        require(getConversionRate(msg.value) >= minimumUSD, "not enough ETH");
 
 
     }
