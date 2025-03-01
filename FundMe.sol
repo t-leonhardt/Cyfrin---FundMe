@@ -14,6 +14,13 @@ contract FundMe {
     uint256 public minimumUSD = 5 * (10 ** 18);
     // update since getConversionRate returns number with 18 decimal places 
     // other options: 5e18 or 5 * 1e18
+
+    address[] public funders;
+
+    mapping (address funder => uint256 amountFunded) public addressToAmountFunded;
+    // does not need the words "funder" and "amountFunded", it could just be:
+    // mapping (address => uint256) public addressToAmountFunded; however,
+    // this makes it easier to read
     
     function fund() public payable{ 
         // payable keyword is necessary for the 
@@ -36,7 +43,10 @@ contract FundMe {
 
 
         require(getConversionRate(msg.value) >= minimumUSD, "not enough ETH");
+        funders.push(msg.sender);
+        // msg.sender is whoever called the function/transaction
 
+        addressToAmountFunded[msg.sender] = addressToAmountFunded[msg.sender] + msg.value;
 
     }
 
