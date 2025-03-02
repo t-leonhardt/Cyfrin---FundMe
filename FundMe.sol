@@ -56,5 +56,33 @@ contract FundMe {
             address funder = funders[funderIndex];
             addressToAmountFunded[funder] = 0;
         }
+
+        funders = new address[](0);
+        // resetting list
+
+
+        // transfer
+        payable(msg.sender).transfer(address(this).balance);
+        // msg.sender is of type "address"
+        // payable(msg.sender) is of type payable address 
+        // "this" refers to the entire contract 
+        // to send tokens in Solidity, only payable addresses can be used 
+        // if "transfer" fails, throws an error and reverts transaction
+
+        // send 
+        bool sendSuccess = payable(msg.sender).send(address(this).balance);
+        // if "send" fails, returns a boolean
+        require(sendSuccess, "Send failed");
+        // without "require", "send" would not revert the transaction 
+
+        // call 
+        (bool callSuccess, bytes memory dataReturned) = payable(msg.sender).call{value: address(this).balance}("");
+        // call allows us to call functions --> if these functions return data, we need to store that data
+        // such data is going to be stored in dataReturned; dataReturned is therefore an array
+        // and requires memory as a keyword
+        // callSuccess is automatically returned; if the functions was successfully called = true 
+        // since we do not call a function in this example, we could also use:
+        // (bool callSuccess, ) = payable(msg.sender).call{value: address(this).balance}("");
+        require(callSuccess, "Call failed");
     }
 }
