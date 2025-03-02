@@ -23,6 +23,12 @@ contract FundMe {
     // mapping (address => uint256) public addressToAmountFunded; however,
     // this makes it easier to read
     
+    address public owner;
+
+    constructor(){
+        owner = msg.sender;
+    }
+
     function fund() public payable{ 
         // payable keyword is necessary for the 
         // function to hold/interact with funds 
@@ -52,6 +58,9 @@ contract FundMe {
     }
 
     function withdraw() public {
+
+        require(msg.sender == owner, "Must be owner");
+
         for(uint256 funderIndex = 0; funderIndex < funders.length; funderIndex++){
             address funder = funders[funderIndex];
             addressToAmountFunded[funder] = 0;
