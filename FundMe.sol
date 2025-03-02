@@ -57,9 +57,10 @@ contract FundMe {
 
     }
 
-    function withdraw() public {
-
-        require(msg.sender == owner, "Must be owner");
+    function withdraw() public onlyOwner {
+        // onlyOwner is a modifier
+        //require(msg.sender == owner, "Must be owner");
+        // not ncessary when using modifiers; see below this function 
 
         for(uint256 funderIndex = 0; funderIndex < funders.length; funderIndex++){
             address funder = funders[funderIndex];
@@ -94,4 +95,16 @@ contract FundMe {
         // (bool callSuccess, ) = payable(msg.sender).call{value: address(this).balance}("");
         require(callSuccess, "Call failed");
     }
+
+    // modifiers permit the creation of keywords for function declerations
+    modifier onlyOwner {
+        require(msg.sender == owner, "Must be owner");
+        _;
+        // first onlyOwner is called when the original function is called, 
+        // and the the _; means that the original function can execute 
+        // whatever is left in its body 
+        // ORDER matters: if reversed, it would execute the function first 
+        // and then check is user has permission 
+    }
+
 }
