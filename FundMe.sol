@@ -112,5 +112,14 @@ contract FundMe {
         // and then check is user has permission 
     }
 
-    
+    receive(){
+        fund();
+    }
+
+    fallback(){
+        fund();
+    }
+
+    // if user fails to use fund(), for example by using "call"
+    // using their wallet, it is re-driected to fund() anyways
 }
