@@ -12,9 +12,11 @@ import {PriceConverter} from "./PriceConverter.sol";
 contract FundMe {
     using PriceConverter for uint256;
 
-    uint256 public minimumUSD = 5 * (10 ** 18);
+    uint256 public constant MINIMUM_USD = 5 * (10 ** 18);
     // update since getConversionRate returns number with 18 decimal places 
     // other options: 5e18 or 5 * 1e18
+    // convention for constant variables is all caps 
+    // using constant variables saves gas
 
     address[] public funders;
 
@@ -23,10 +25,13 @@ contract FundMe {
     // mapping (address => uint256) public addressToAmountFunded; however,
     // this makes it easier to read
     
-    address public owner;
+    address public immutable i_owner;
+    // convention for immutable variables is using i_ at the beginning 
+    // to signalize that they are immutable 
+    // using immutable saves gas 
 
     constructor(){
-        owner = msg.sender;
+        i_owner = msg.sender;
     }
 
     function fund() public payable{ 
@@ -49,7 +54,7 @@ contract FundMe {
         // in solidity ** means to the power 
 
 
-        require(msg.value.getConversionRate() >= minimumUSD, "not enough ETH");
+        require(msg.value.getConversionRate() >= MINIMUM_USD, "not enough ETH");
         funders.push(msg.sender);
         // msg.sender is whoever called the function/transaction
 
@@ -98,7 +103,7 @@ contract FundMe {
 
     // modifiers permit the creation of keywords for function declerations
     modifier onlyOwner {
-        require(msg.sender == owner, "Must be owner");
+        require(msg.sender == i_owner, "Must be owner");
         _;
         // first onlyOwner is called when the original function is called, 
         // and the the _; means that the original function can execute 
